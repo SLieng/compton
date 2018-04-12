@@ -127,8 +127,6 @@ INCS += $(shell pkg-config --cflags $(PACKAGES))
 CFLAGS += -Wall
 
 BINS = compton bin/compton-trans
-MANPAGES = man/compton.1 man/compton-trans.1
-MANPAGES_HTML = $(addsuffix .html,$(MANPAGES))
 
 # === Recipes ===
 .DEFAULT_GOAL := compton
@@ -148,13 +146,10 @@ man/%.1: man/%.1.asciidoc
 man/%.1.html: man/%.1.asciidoc
 	asciidoc $<
 
-docs: $(MANPAGES) $(MANPAGES_HTML)
-
 install: $(BINS) docs
 	@install -d "$(DESTDIR)$(BINDIR)" "$(DESTDIR)$(MANDIR)" "$(DESTDIR)$(APPDIR)"
 	@install -m755 $(BINS) "$(DESTDIR)$(BINDIR)"/
 ifneq "$(MANPAGES)" ""
-	@install -m644 $(MANPAGES) "$(DESTDIR)$(MANDIR)"/
 endif
 	@install -d \
 		"$(DESTDIR)$(ICODIR)/scalable/apps" \
@@ -172,12 +167,9 @@ uninstall:
 	@rm -f "$(DESTDIR)$(BINDIR)/compton" "$(DESTDIR)$(BINDIR)/compton-trans"
 	@rm -f $(addprefix "$(DESTDIR)$(MANDIR)"/, compton.1 compton-trans.1)
 	@rm -f "$(DESTDIR)$(APPDIR)/compton.desktop"
-ifneq "$(DOCDIR)" ""
-	@rm -f $(addprefix "$(DESTDIR)$(DOCDIR)"/, README.md compton.sample.conf cdbus-driver.sh)
-endif
 
 clean:
-	@rm -f $(OBJS) compton $(MANPAGES) $(MANPAGES_HTML) .clang_complete
+	@rm -f $(OBJS) compton .clang_complete
 
 version:
 	@echo "$(COMPTON_VERSION)"
